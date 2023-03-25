@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'accounts'
 ]
 
 MIDDLEWARE = [
@@ -134,4 +135,6 @@ STATIC_URL = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.UUIDField'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+AUTH_USER_MODEL = 'accounts.User'
