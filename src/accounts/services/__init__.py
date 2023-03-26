@@ -1,1 +1,2 @@
 from .create_user_service import CreateUserService
+from .confirm_email_service import ConfirmEmailService
