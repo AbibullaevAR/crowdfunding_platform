@@ -1,5 +1,4 @@
 
-from django.urls import reverse
 from django.contrib.auth import get_user_model
 
 from accounts.utilities import generate_reg_token
@@ -10,14 +9,14 @@ UserModel = get_user_model()
 class CreateUserService:
 
 
-    def execute(self, password: str, **extra_fields) -> UserModel:
+    def execute(self, password: str, view, **extra_fields) -> UserModel:
 
         user_DAO = UsersDAO()
         user_entity = user_DAO.create_user(password=password, is_active=False, **extra_fields)
 
         token = generate_reg_token(user_entity.id)
 
-        url = reverse('accounts:confirm_email', kwargs={'token': token})
+        url = view.get_absolute_uri('accounts:confirm_email', token=token)
 
         user_DAO.email_user(
             user_entity, 

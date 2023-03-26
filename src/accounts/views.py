@@ -1,4 +1,5 @@
 from django.http import HttpResponseRedirect
+from django.urls import reverse
 from rest_framework import generics
 from rest_framework.views import APIView
 
@@ -11,7 +12,10 @@ class CreateUserView(generics.CreateAPIView):
     serializer_class = CreateUserSerializer
 
     def perform_create(self, serializer):
-        CreateUserService().execute(**serializer.validated_data)
+        CreateUserService().execute(view=self, **serializer.validated_data)
+    
+    def get_absolute_uri(self, local_url: str, **kwargs) -> str:
+        return self.request.build_absolute_uri(reverse(local_url, kwargs=kwargs))
 
 
 class ConfirmEmailView(APIView):
