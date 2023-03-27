@@ -30,4 +30,4 @@ class ConfirmEmailService:
 
         email_confirmation_json = json.dumps(asdict(email_confirmation))
 
-        return f'http://localhost:8000/user/modification?data={email_confirmation_json}'
+        return f'http://localhost:3000/user/modification?data={email_confirmation_json}'
