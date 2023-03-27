@@ -2,8 +2,9 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from rest_framework import generics
 from rest_framework.views import APIView
+from rest_framework import permissions
 
-from .serializers import CreateUserSerializer
+from .serializers import CreateUserSerializer, RetrieveUserSerializer
 from .services import CreateUserService
 from accounts.services import ConfirmEmailService
 
@@ -22,3 +23,11 @@ class ConfirmEmailView(APIView):
     def get(self, request, token):
         redirect_url = ConfirmEmailService().execute(token=token)
         return HttpResponseRedirect(redirect_to=redirect_url)
+    
+
+class RetrieveUserView(generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = RetrieveUserSerializer
+
+    def get_object(self):
+        return self.request.user

@@ -8,3 +8,10 @@ class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ('email', 'name', 'password')
+
+
+class RetrieveUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = get_user_model()
+        fields = ('email', 'name', 'id', 'is_admin')
