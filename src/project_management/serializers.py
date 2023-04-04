@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from project_management.models import Project, ProjectCategory, Category
+from project_management.models import Project, Category
 
 
 class CreateProjectSerializer(serializers.ModelSerializer):
@@ -27,3 +27,8 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ('id', 'name')
+
+
+class LikeProjectSerializer(serializers.Serializer):
+    project_id = serializers.UUIDField()
+    
