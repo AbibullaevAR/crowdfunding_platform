@@ -26,13 +26,14 @@ class Project(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     title = models.CharField(_('title'), max_length=45, blank=False)
     goal_likes = models.PositiveIntegerField(_('goal_likes'), default=0, blank=False)
-    taken_likes = models.PositiveIntegerField(_('taken_likes'), default=0, blank=False)
     short_description = models.CharField(_('short_description'), max_length=180)
     start_project = models.DateField(blank=False)
     end_project = models.DateField(blank=False)
     status = models.CharField(_('status'), max_length=2, choices=STATUS_CHOICES, default='WT')
 
     categories = models.ManyToManyField(Category, through='ProjectCategory')
+    taken_likes = models.ManyToManyField(get_user_model(), through='UserProjectLike')
+
     author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='projects', blank=False)
 
     def clean(self) -> None:
@@ -40,6 +41,9 @@ class Project(models.Model):
             raise ValidationError(_('Start date should be greater or equal to current date.'))
         if self.start_project > self.end_project:
             raise ValidationError(_('End date should be greater or equal to start date.'))
+    
+    def taken_likes_count(self) -> int:
+        return self.taken_likes.count()
 
 
 class ProjectCategory(models.Model):
@@ -49,3 +53,11 @@ class ProjectCategory(models.Model):
 
     class Meta:
         unique_together = ('project', 'category')
+
+
+class UserProjectLike(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('project', 'user')
