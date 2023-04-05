@@ -56,7 +56,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'accounts',
     'corsheaders',
-    'project_management'
+    'project_management',
+    'attached_file'
 ]
 
 MIDDLEWARE = [
