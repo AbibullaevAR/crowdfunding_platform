@@ -1,3 +1,5 @@
+import json
+
 from rest_framework import generics, status
 from rest_framework import permissions
 from rest_framework.response import Response
@@ -6,6 +8,7 @@ from rest_framework.request import Request
 from project_management.models import Category, Project
 from project_management.serializers import CreateProjectSerializer, CategorySerializer, RetrieveProjectSerializer, LikeProjectSerializer
 from project_management.services import like_project
+from attached_file.services import create_image_for_project
 
 # Create your views here.
 
@@ -13,8 +16,20 @@ class CreateProjectView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
     serializer_class = CreateProjectSerializer
 
-    def perform_create(self, serializer: CreateProjectSerializer):
-        serializer.save(author=self.request.user, **serializer.validated_data)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        available_formats = serializer.validated_data.pop('images')['all']
+
+        project = serializer.save(author=self.request.user, **serializer.validated_data)
+
+        resp_data = {
+            'upload_links': create_image_for_project(project=project, available_formats=available_formats)
+        }
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(resp_data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class RetrieveProjectView(generics.RetrieveAPIView):
