@@ -1,15 +1,17 @@
 from rest_framework import serializers
 
 from project_management.models import Project, Category
+from attached_file.models import Image
 
 
 class CreateProjectSerializer(serializers.ModelSerializer):
 
+    images = serializers.ListField(child=serializers.ChoiceField(Image.AVAILABLE_FORMAT_CHOICES), source='images.all')
     categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
 
     class Meta:
         model = Project
-        fields = ('title', 'goal_likes', 'short_description', 'start_project', 'end_project', 'categories')
+        fields = ('title', 'goal_likes', 'short_description', 'start_project', 'end_project', 'categories', 'images')
 
 
 class RetrieveProjectSerializer(serializers.ModelSerializer):
