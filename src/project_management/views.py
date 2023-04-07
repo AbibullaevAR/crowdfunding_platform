@@ -8,7 +8,7 @@ from rest_framework.request import Request
 from project_management.models import Category, Project
 from project_management.serializers import CreateProjectSerializer, CategorySerializer, RetrieveProjectSerializer, LikeProjectSerializer
 from project_management.services import like_project
-from attached_file.services import create_image_for_project
+from attached_file.services import create_image_for_project, get_download_link_for_images
 
 # Create your views here.
 
@@ -39,6 +39,14 @@ class RetrieveProjectView(generics.RetrieveAPIView):
     def get_object(self) -> Project:
         project_id = self.request.GET.get('id')
         return Project.objects.get(id=project_id)
+    
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        img_links = get_download_link_for_images(instance.images.all())
+
+        serializer = self.get_serializer(instance, context={'img_links': img_links})
+        return Response(serializer.data)
 
 
 class ListCategoryView(generics.ListAPIView):
