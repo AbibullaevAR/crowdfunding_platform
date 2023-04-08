@@ -46,7 +46,9 @@ class RetrieveProjectView(generics.RetrieveAPIView):
 
         img_links = get_download_link_for_images(instance.images.all())
 
-        serializer = self.get_serializer(instance, context={'img_links': img_links})
+        context = self.serializer_class.create_context(instance, {'img_links': img_links})
+
+        serializer = self.get_serializer(instance, context=context)
         return Response(serializer.data)
 
 
