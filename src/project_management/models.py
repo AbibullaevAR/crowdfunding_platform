@@ -18,9 +18,9 @@ class Category(models.Model):
 class Project(models.Model):
 
     STATUS_CHOICES = (
-        ('AP', 'approve'),
-        ('CL', 'cancel'),
-        ('WT', 'waiting')
+        ('approve', 'approve'),
+        ('cancel', 'cancel'),
+        ('waiting', 'waiting')
     )
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
@@ -29,7 +29,7 @@ class Project(models.Model):
     short_description = models.CharField(_('short_description'), max_length=180)
     start_project = models.DateField(blank=False)
     end_project = models.DateField(blank=False)
-    status = models.CharField(_('status'), max_length=2, choices=STATUS_CHOICES, default='WT')
+    status = models.CharField(_('status'), max_length=10, choices=STATUS_CHOICES, default='waiting')
 
     categories = models.ManyToManyField(Category, through='ProjectCategory')
     taken_likes = models.ManyToManyField(get_user_model(), through='UserProjectLike')
