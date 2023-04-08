@@ -25,9 +25,21 @@ class RetrieveProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = ('id', 'taken_likes', 'title', 'goal_likes', 'short_description', 'start_project', 'end_project', 'categories', 'img_links')
     
-    def get_img_links(self, instance):
-        return self.context.get('img_links')
+    def get_img_links(self, project):
+        context = self.get_context(project)
+        return context.get('img_links')
+    
+    def get_context(self, project: Project) -> dict:
 
+        if isinstance(self.context, list):
+            project_id = project.id
+            return [item.get(project_id) for item in self.context if project_id in item][0]
+        
+        return self.context.get(project.id)
+
+    @staticmethod
+    def create_context(project: Project, data) -> dict:
+        return {project.id: data}
 
 class ChangeProjectStatusSerializer(serializers.ModelSerializer):
 
