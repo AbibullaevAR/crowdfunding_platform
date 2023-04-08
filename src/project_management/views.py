@@ -5,8 +5,9 @@ from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.request import Request
 
+from accounts.permissions import IsAdmin
 from project_management.models import Category, Project
-from project_management.serializers import CreateProjectSerializer, CategorySerializer, RetrieveProjectSerializer, LikeProjectSerializer
+from project_management.serializers import CreateProjectSerializer, CategorySerializer, RetrieveProjectSerializer, LikeProjectSerializer, ChangeProjectStatusSerializer
 from project_management.services import like_project
 from attached_file.services import create_image_for_project, get_download_link_for_images
 
@@ -66,3 +67,13 @@ class LikeProjectView(generics.GenericAPIView):
         like_project(serializer.validated_data.get('project_id'), request.user)
 
         return Response(status=status.HTTP_202_ACCEPTED)
+
+
+class ChangeProjectStatusView(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated, IsAdmin]
+    serializer_class = ChangeProjectStatusSerializer
+
+    def get_object(self):
+        return Project.objects.get(id=self.kwargs['id'])
+
+    
