@@ -29,6 +29,15 @@ class RetrieveProjectSerializer(serializers.ModelSerializer):
         return self.context.get('img_links')
 
 
+class ChangeProjectStatusSerializer(serializers.ModelSerializer):
+
+    status = serializers.ChoiceField(choices=Project.STATUS_CHOICES)
+
+    class Meta:
+        model = Project
+        fields = ('status', )
+
+
 class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
