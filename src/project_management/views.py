@@ -50,6 +50,35 @@ class RetrieveProjectView(generics.RetrieveAPIView):
         return Response(serializer.data)
 
 
+class ListApproveProjectView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = RetrieveProjectSerializer
+    
+    def get_queryset(self) -> list[Project]:
+        status_dict = dict(Project.STATUS_CHOICES)
+        status_value = status_dict.get('approve')
+        return Project.objects.filter(status=status_value).all()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        context = [
+            self.serializer_class.create_context(
+                project=project,
+                data={'img_links': get_download_link_for_images(project.images.all())} 
+            )
+            for project in queryset
+        ]
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True, context=context)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True, context=context)
+        return Response(serializer.data)
+
+
 class ListCategoryView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
     serializer_class = CategorySerializer
