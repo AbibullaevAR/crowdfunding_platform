@@ -7,7 +7,7 @@ from rest_framework.request import Request
 
 from accounts.permissions import IsAdmin
 from project_management.models import Category, Project
-from project_management.serializers import CreateProjectSerializer, CategorySerializer, RetrieveProjectSerializer, LikeProjectSerializer, ChangeProjectStatusSerializer
+from project_management.serializers import CreateProjectSerializer, CategorySerializer, ProjectSerializer, LikeProjectSerializer, ChangeProjectStatusSerializer
 from project_management.services import like_project
 from attached_file.services import create_image_for_project, get_download_link_for_images
 
@@ -35,7 +35,7 @@ class CreateProjectView(generics.CreateAPIView):
 
 class RetrieveProjectView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
-    serializer_class = RetrieveProjectSerializer
+    serializer_class = ProjectSerializer
 
     def get_object(self) -> Project:
         project_id = self.request.GET.get('id')
@@ -54,7 +54,7 @@ class RetrieveProjectView(generics.RetrieveAPIView):
 
 class ListApproveProjectView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
-    serializer_class = RetrieveProjectSerializer
+    serializer_class = ProjectSerializer
     
     def get_queryset(self) -> list[Project]:
         status_dict = dict(Project.STATUS_CHOICES)

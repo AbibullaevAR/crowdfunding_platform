@@ -14,7 +14,7 @@ class CreateProjectSerializer(serializers.ModelSerializer):
         fields = ('title', 'goal_likes', 'short_description', 'start_project', 'end_project', 'categories', 'images')
 
 
-class RetrieveProjectSerializer(serializers.ModelSerializer):
+class ProjectSerializer(serializers.ModelSerializer):
 
     img_links = serializers.SerializerMethodField()
     
