@@ -40,9 +40,11 @@ class ChangeProjectStatusSerializer(serializers.ModelSerializer):
 
 class CategorySerializer(serializers.ModelSerializer):
 
+    text = serializers.CharField(source='name')
+
     class Meta:
         model = Category
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'text')
 
 
 class LikeProjectSerializer(serializers.Serializer):
