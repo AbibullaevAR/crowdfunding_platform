@@ -16,16 +16,16 @@ class CreateProjectSerializer(serializers.ModelSerializer):
 
 class ProjectSerializer(serializers.ModelSerializer):
 
-    img_links = serializers.SerializerMethodField()
+    images = serializers.SerializerMethodField()
     
     taken_likes = serializers.IntegerField(source='taken_likes_count')
     categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
 
     class Meta:
         model = Project
-        fields = ('id', 'taken_likes', 'title', 'goal_likes', 'short_description', 'start_project', 'end_project', 'categories', 'img_links')
+        fields = ('id', 'taken_likes', 'title', 'goal_likes', 'short_description', 'start_project', 'end_project', 'categories', 'images')
     
-    def get_img_links(self, project: Project):
+    def get_images(self, project: Project):
         return project.get_images()
 
 
