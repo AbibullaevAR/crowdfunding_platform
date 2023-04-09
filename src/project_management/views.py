@@ -77,11 +77,23 @@ class LikeProjectView(generics.GenericAPIView):
         return Response(status=status.HTTP_202_ACCEPTED)
 
 
+# Admin views
+
 class ChangeProjectStatusView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated, IsAdmin]
     serializer_class = ChangeProjectStatusSerializer
 
     def get_object(self):
         return Project.objects.get(id=self.kwargs['id'])
+
+
+class ListWaitingProjectView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, IsAdmin]
+    serializer_class = ProjectSerializer
+
+    def get_queryset(self):
+        status_dict = dict(Project.STATUS_CHOICES)
+        status_value = status_dict.get('waiting')
+        return Project.objects.filter(status=status_value).all()
 
     
