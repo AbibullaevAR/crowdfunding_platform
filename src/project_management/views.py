@@ -59,7 +59,6 @@ class ListUserProjectView(generics.ListAPIView):
         return Project.objects.filter(author=self.request.user).all()
 
 class ListCategoryView(generics.ListAPIView):
-    permission_classes = [permissions.IsAuthenticated, ]
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
 
