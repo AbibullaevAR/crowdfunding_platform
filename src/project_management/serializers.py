@@ -23,7 +23,7 @@ class AuthorSerializer(serializers.ModelSerializer):
         fields = ('email', 'name', 'id', 'projects')
 
     def get_projects(self, author):
-        return len(author.project_set.all())
+        return len(author.projects.all())
 
 
 class CreateProjectSerializer(serializers.ModelSerializer):
