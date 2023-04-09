@@ -50,7 +50,14 @@ class ListApproveProjectView(generics.ListAPIView):
         status_dict = dict(Project.STATUS_CHOICES)
         status_value = status_dict.get('approve')
         return Project.objects.filter(status=status_value).all()
+    
 
+class ListUserProjectView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = ProjectSerializer
+
+    def get_queryset(self):
+        return Project.objects.filter(author=self.request.user).all()
 
 class ListCategoryView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
