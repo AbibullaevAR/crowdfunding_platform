@@ -49,4 +49,11 @@ class ChangeProjectStatusSerializer(serializers.ModelSerializer):
 
 class LikeProjectSerializer(serializers.Serializer):
     project_id = serializers.UUIDField()
+
+
+class LikedByUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Project
+        fields = ('id', )
     
