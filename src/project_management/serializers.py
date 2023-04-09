@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.contrib.auth import get_user_model
 
 from project_management.models import Project, Category
 from attached_file.models import Image
@@ -11,6 +12,18 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ('id', 'text')
+
+
+class AuthorSerializer(serializers.ModelSerializer):
+
+    projects = serializers.SerializerMethodField()
+
+    class Meta:
+        model = get_user_model()
+        fields = ('email', 'name', 'id', 'projects')
+
+    def get_projects(self, author):
+        return len(author.project_set.all())
 
 
 class CreateProjectSerializer(serializers.ModelSerializer):
@@ -29,10 +42,11 @@ class ProjectSerializer(serializers.ModelSerializer):
     
     taken_likes = serializers.IntegerField(source='taken_likes_count')
     categories = CategorySerializer(many=True)
+    author = AuthorSerializer()
 
     class Meta:
         model = Project
-        fields = ('id', 'taken_likes', 'title', 'goal_likes', 'short_description', 'start_project', 'end_project', 'categories', 'images', 'status')
+        fields = ('id', 'taken_likes', 'title', 'goal_likes', 'short_description', 'start_project', 'end_project', 'categories', 'images', 'status', 'author')
     
     def get_images(self, project: Project):
         return project.get_images()
