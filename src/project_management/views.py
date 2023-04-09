@@ -34,7 +34,6 @@ class CreateProjectView(generics.CreateAPIView):
 
 
 class RetrieveProjectView(generics.RetrieveAPIView):
-    permission_classes = [permissions.IsAuthenticated, ]
     serializer_class = ProjectSerializer
 
     def get_object(self) -> Project:
