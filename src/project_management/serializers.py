@@ -20,7 +20,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ('email', 'name', 'id', 'projects')
+        fields = ('email', 'name', 'id', 'projects', 'is_admin')
 
     def get_projects(self, author):
         return len(author.projects.all())
