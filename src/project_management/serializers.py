@@ -4,6 +4,15 @@ from project_management.models import Project, Category
 from attached_file.models import Image
 
 
+class CategorySerializer(serializers.ModelSerializer):
+
+    text = serializers.CharField(source='name')
+
+    class Meta:
+        model = Category
+        fields = ('id', 'text')
+
+
 class CreateProjectSerializer(serializers.ModelSerializer):
 
     images = serializers.ListField(child=serializers.ChoiceField(Image.AVAILABLE_FORMAT_CHOICES), source='images.all')
@@ -19,7 +28,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
     
     taken_likes = serializers.IntegerField(source='taken_likes_count')
-    categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
+    categories = CategorySerializer(many=True)
 
     class Meta:
         model = Project
@@ -36,15 +45,6 @@ class ChangeProjectStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ('status', )
-
-
-class CategorySerializer(serializers.ModelSerializer):
-
-    text = serializers.CharField(source='name')
-
-    class Meta:
-        model = Category
-        fields = ('id', 'text')
 
 
 class LikeProjectSerializer(serializers.Serializer):
