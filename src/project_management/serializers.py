@@ -44,7 +44,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('id', 'name', 'text')
+        fields = ('id', 'text')
 
 
 class LikeProjectSerializer(serializers.Serializer):
