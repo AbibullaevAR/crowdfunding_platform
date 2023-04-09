@@ -7,7 +7,14 @@ from rest_framework.request import Request
 
 from accounts.permissions import IsAdmin
 from project_management.models import Category, Project
-from project_management.serializers import CreateProjectSerializer, CategorySerializer, ProjectSerializer, LikeProjectSerializer, ChangeProjectStatusSerializer
+from project_management.serializers import (
+    CreateProjectSerializer,
+    CategorySerializer, 
+    ProjectSerializer, 
+    LikeProjectSerializer, 
+    ChangeProjectStatusSerializer,
+    LikedByUserSerializer
+    )
 from project_management.services import like_project
 from attached_file.services import create_image_for_project, get_download_link_for_images
 
@@ -74,6 +81,28 @@ class LikeProjectView(generics.GenericAPIView):
 
         return Response(status=status.HTTP_202_ACCEPTED)
 
+
+class LikedByUserView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = LikedByUserSerializer
+
+    def get_queryset(self):
+        return self.request.user.project_set.all()
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        
+        resp_data = [item['id'] for item in serializer.data]
+
+        return Response(resp_data)
+    
 
 # Admin views
 
