@@ -43,7 +43,6 @@ class RetrieveProjectView(generics.RetrieveAPIView):
 
 
 class ListApproveProjectView(generics.ListAPIView):
-    permission_classes = [permissions.IsAuthenticated, ]
     serializer_class = ProjectSerializer
     
     def get_queryset(self) -> list[Project]:
