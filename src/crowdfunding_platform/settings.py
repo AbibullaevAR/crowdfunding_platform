@@ -107,6 +107,16 @@ DATABASES = {
 }
 
 
+# Caches
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+        'LOCATION': os.environ.get("CACHE_LOCATION"),
+        'TIMEOUT': int(os.environ.get("CACHE_TIMEOUT", default=0))
+    }
+}
+
+
 # REST FRAMEWORK
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
