@@ -49,7 +49,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = ('id', 'taken_likes', 'title', 'goal_likes', 'short_description', 'start_project', 'end_project', 'categories', 'images', 'status', 'author')
     
     def get_images(self, project: Project):
-        return project.get_images()
+        return self.context['images'].get(project.id)
 
 
 class ChangeProjectStatusSerializer(serializers.ModelSerializer):

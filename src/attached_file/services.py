@@ -14,4 +14,6 @@ def create_image_for_project(project, available_formats: list[str]) -> list[str]
 def get_download_link_for_images(images: QuerySet[Image]) -> list[str]:
 
     storage = ExternalStorageManage()
-    return [storage.get_download_link(str(image.id) + image.available_format) for image in images]
+    download_links = storage.get_download_links([str(image.id) + image.available_format for image in images])
+
+    return zip(images, download_links)

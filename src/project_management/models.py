@@ -5,7 +5,6 @@ from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from django.utils.module_loading import import_string
 
 # Create your models here.
 
@@ -45,10 +44,6 @@ class Project(models.Model):
     
     def taken_likes_count(self) -> int:
         return self.taken_likes.count()
-    
-    def get_images(self):
-        get_download_link_for_images = import_string('attached_file.services.get_download_link_for_images')
-        return get_download_link_for_images(self.images.all())
 
 
 class ProjectCategory(models.Model):
