@@ -45,6 +45,20 @@ class RetrieveProjectView(generics.RetrieveAPIView):
     def get_object(self) -> Project:
         project_id = self.request.GET.get('id')
         return Project.objects.get(id=project_id)
+    
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        download_links = [link for _, link in get_download_link_for_images(instance.images.all())]
+
+        context = {
+            'images':{
+                instance.id: download_links
+            }
+        }
+
+        serializer = self.get_serializer(instance, context=context)
+        return Response(serializer.data)
 
 
 class ListApproveProjectView(ProjectListWithImageAPIView):
