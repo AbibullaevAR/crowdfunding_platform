@@ -4,6 +4,7 @@ import time
 
 import aiohttp
 from django.conf import settings
+from django.core.cache import cache
 import requests
 
 
@@ -83,10 +84,25 @@ class ExternalStorageManage:
             headers=self.headers
         ).json()
         return request_json['href']
+
     
     def get_download_links(self, file_names: list[str]):
-        async_manager = AsyncRequestsManager()
+
+        file_cache = self._check_in_cache(file_names)
+        files_not_cache = [file_name for file_name in file_names if file_name not in file_cache]
+
+        if files_not_cache is not None:
+            cache.set_many(
+                {file_name: link for file_name, link in zip(files_not_cache, self._do_requests(files_not_cache))}
+            )
+            file_cache = self._check_in_cache(file_names)
         
+        return [file_cache[file_name] for file_name in file_names]
+    
+    def _do_requests(self, file_names: list[str]) -> list[str]:
+
+        async_manager = AsyncRequestsManager()
+
         async_requests = [
             async_manager.Request(
                 url=self.action['download_file'] + file_name,
@@ -97,3 +113,7 @@ class ExternalStorageManage:
 
         responses = async_manager.do_async_requests(async_requests)
         return [response['href'] for response in responses]
+    
+
+    def _check_in_cache(self, file_names: list[str]) -> dict:
+        return {file_name: cache.get(file_name) for file_name in file_names if cache.has_key(file_name)}
