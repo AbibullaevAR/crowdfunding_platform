@@ -1,5 +1,3 @@
-import json
-
 from rest_framework import generics, status
 from rest_framework import permissions
 from rest_framework.response import Response
@@ -16,6 +14,7 @@ from project_management.serializers import (
     LikedByUserSerializer
     )
 from project_management.services import like_project
+from project_management.generics import ProjectListWithImageAPIView
 from attached_file.services import create_image_for_project, get_download_link_for_images
 
 # Create your views here.
@@ -48,21 +47,24 @@ class RetrieveProjectView(generics.RetrieveAPIView):
         return Project.objects.get(id=project_id)
 
 
-class ListApproveProjectView(generics.ListAPIView):
+class ListApproveProjectView(ProjectListWithImageAPIView):
     serializer_class = ProjectSerializer
+    images_link_func = get_download_link_for_images
     
     def get_queryset(self) -> list[Project]:
         status_dict = dict(Project.STATUS_CHOICES)
         status_value = status_dict.get('approve')
         return Project.objects.filter(status=status_value).all()
-    
 
-class ListUserProjectView(generics.ListAPIView):
+
+class ListUserProjectView(ProjectListWithImageAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
     serializer_class = ProjectSerializer
+    images_link_func = get_download_link_for_images
 
     def get_queryset(self):
         return Project.objects.filter(author=self.request.user).all()
+
 
 class ListCategoryView(generics.ListAPIView):
     serializer_class = CategorySerializer
@@ -114,9 +116,10 @@ class ChangeProjectStatusView(generics.UpdateAPIView):
         return Project.objects.get(id=self.kwargs['id'])
 
 
-class ListWaitingProjectView(generics.ListAPIView):
+class ListWaitingProjectView(ProjectListWithImageAPIView):
     permission_classes = [permissions.IsAuthenticated, IsAdmin]
     serializer_class = ProjectSerializer
+    images_link_func = get_download_link_for_images
 
     def get_queryset(self):
         status_dict = dict(Project.STATUS_CHOICES)
