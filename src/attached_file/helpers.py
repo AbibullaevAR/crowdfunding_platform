@@ -1,5 +1,38 @@
+from dataclasses import dataclass, asdict
+import asyncio
+import time
+
+import aiohttp
 from django.conf import settings
 import requests
+
+
+class AsyncRequestsManager:
+
+    @dataclass
+    class Request:
+        url: str
+        headers: dict
+        method: str
+
+    def do_async_requests(self, requests: list[Request]) -> list[dict]:
+        results = asyncio.run(self.main(requests))
+
+        return results
+
+    async def main(self, requests: list[Request]):
+        async with aiohttp.ClientSession() as session:
+            tasks = [self._fetch_data(session, request) for request in requests]
+            results = await asyncio.gather(*tasks)
+            return results
+    
+    @staticmethod
+    async def _fetch_data(session: aiohttp.ClientSession, request: Request):
+        async with session.request(**asdict(request)) as response:
+            
+            data = await response.json()
+            return data
+
 
 
 class ExternalStorageManage:
@@ -50,3 +83,17 @@ class ExternalStorageManage:
             headers=self.headers
         ).json()
         return request_json['href']
+    
+    def get_download_links(self, file_names: list[str]):
+        async_manager = AsyncRequestsManager()
+        
+        async_requests = [
+            async_manager.Request(
+                url=self.action['download_file'] + file_name,
+                headers=self.headers,
+                method="GET"
+            )
+            for file_name in file_names]
+
+        responses = async_manager.do_async_requests(async_requests)
+        return [response['href'] for response in responses]
