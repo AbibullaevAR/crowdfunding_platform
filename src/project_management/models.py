@@ -2,9 +2,7 @@ import uuid
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
-from django.utils import timezone
 
 # Create your models here.
 
@@ -36,11 +34,6 @@ class Project(models.Model):
 
     author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='projects', blank=False)
 
-    def clean(self) -> None:
-        if self.start_project < timezone.localdate():
-            raise ValidationError(_('Start date should be greater or equal to current date.'))
-        if self.start_project > self.end_project:
-            raise ValidationError(_('End date should be greater or equal to start date.'))
     
     def taken_likes_count(self) -> int:
         return self.taken_likes.count()
