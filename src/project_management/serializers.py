@@ -1,5 +1,8 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from project_management.models import Project, Category
 from attached_file.models import Image
@@ -23,7 +26,7 @@ class AuthorSerializer(serializers.ModelSerializer):
         fields = ('email', 'name', 'id', 'projects', 'is_admin')
 
     def get_projects(self, author):
-        return len(author.projects.all())
+        return len(author.projects.filter(status='approve').all())
 
 
 class CreateProjectSerializer(serializers.ModelSerializer):
