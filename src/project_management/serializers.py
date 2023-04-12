@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from project_management.models import Project, Category
+from project_management.models import Project, Category, Comment
 from attached_file.models import Image
 
 
@@ -81,4 +81,13 @@ class LikedByUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ('id', )
-    
+
+
+class CreateCommentSerializer(serializers.ModelSerializer):
+
+    project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.filter(status='approve').all())
+
+    class Meta:
+        model = Comment
+        fields = ('text', 'project')
+        
