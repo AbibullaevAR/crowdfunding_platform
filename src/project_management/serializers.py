@@ -37,6 +37,14 @@ class CreateProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ('title', 'goal_likes', 'short_description', 'start_project', 'end_project', 'categories', 'images')
+    
+    def validate(self, attrs):
+        if attrs['start_project'] < timezone.localdate():
+            raise ValidationError(_('Start date should be greater or equal to current date.'))
+        if attrs['start_project'] > attrs['end_project']:
+            raise ValidationError(_('End date should be greater or equal to start date.'))
+        
+        return attrs
 
 
 class ProjectSerializer(serializers.ModelSerializer):
