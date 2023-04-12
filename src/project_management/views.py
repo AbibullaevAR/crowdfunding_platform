@@ -12,7 +12,8 @@ from project_management.serializers import (
     ProjectSerializer, 
     LikeProjectSerializer, 
     ChangeProjectStatusSerializer,
-    LikedByUserSerializer
+    LikedByUserSerializer,
+    CreateCommentSerializer
     )
 from project_management.services import like_project, check_project_by_user_limit
 from project_management.generics import ProjectListWithImageAPIView
@@ -122,6 +123,14 @@ class LikedByUserView(generics.ListAPIView):
         resp_data = [item['id'] for item in serializer.data]
 
         return Response(resp_data)
+
+
+class CreateCommentView(generics.CreateAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = CreateCommentSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user, **serializer.validated_data)
     
 
 # Admin views
