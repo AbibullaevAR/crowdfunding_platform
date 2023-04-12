@@ -2,6 +2,7 @@ from rest_framework import generics, status
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.request import Request
+from rest_framework.exceptions import ValidationError
 
 from accounts.permissions import IsAdmin
 from project_management.models import Category, Project
@@ -13,7 +14,7 @@ from project_management.serializers import (
     ChangeProjectStatusSerializer,
     LikedByUserSerializer
     )
-from project_management.services import like_project
+from project_management.services import like_project, check_project_by_user_limit
 from project_management.generics import ProjectListWithImageAPIView
 from attached_file.services import create_image_for_project, get_download_link_for_images
 
@@ -26,6 +27,9 @@ class CreateProjectView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
+        if not check_project_by_user_limit(self.request.user):
+            raise ValidationError('you have exceeded the number of projects on consideration', status.HTTP_400_BAD_REQUEST)
 
         available_formats = serializer.validated_data.pop('images')['all']
 
