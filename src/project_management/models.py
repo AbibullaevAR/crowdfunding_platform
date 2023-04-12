@@ -54,3 +54,13 @@ class UserProjectLike(models.Model):
 
     class Meta:
         unique_together = ('project', 'user')
+
+
+class Comment(models.Model):
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+    text = models.CharField(max_length=250, blank=False)
+    created_at = models.DateField(auto_now_add=True)
+
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
