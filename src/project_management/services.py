@@ -1,3 +1,5 @@
+from django.core.exceptions import ValidationError
+
 from project_management.models import Project
 
 
@@ -7,3 +9,12 @@ def like_project(project_id: str, user):
         project.taken_likes.remove(user)
     else:
         project.taken_likes.add(user)
+
+
+def check_project_by_user_limit(user) -> bool:
+
+    status_dict = dict(Project.STATUS_CHOICES)
+    status_value = status_dict.get('waiting')
+
+    return len(Project.objects.filter(author=user, status=status_value).all()) < 5
+    
