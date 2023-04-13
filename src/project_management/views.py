@@ -5,7 +5,7 @@ from rest_framework.request import Request
 from rest_framework.exceptions import ValidationError
 
 from accounts.permissions import IsAdmin
-from project_management.models import Category, Project
+from project_management.models import Category, Project, Comment
 from project_management.serializers import (
     CreateProjectSerializer,
     CategorySerializer, 
@@ -13,7 +13,8 @@ from project_management.serializers import (
     LikeProjectSerializer, 
     ChangeProjectStatusSerializer,
     LikedByUserSerializer,
-    CreateCommentSerializer
+    CreateCommentSerializer,
+    CommentSerializer
     )
 from project_management.services import like_project, check_project_by_user_limit
 from project_management.generics import ProjectListWithImageAPIView
@@ -131,6 +132,14 @@ class CreateCommentView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user, **serializer.validated_data)
+
+
+class ListCommentProjectView(generics.ListAPIView):
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        project_id = self.request.GET.get('id')
+        return Comment.objects.filter(project=project_id)
     
 
 # Admin views
