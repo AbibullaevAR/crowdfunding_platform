@@ -10,7 +10,8 @@ from .views import (
     ListUserProjectView,
     ListWaitingProjectView,
     LikedByUserView,
-    CreateCommentView
+    CreateCommentView,
+    ListCommentProjectView
     )
 
 app_name = 'project_management'
@@ -24,6 +25,7 @@ urlpatterns = [
     path("list_category/", ListCategoryView.as_view(), name="list_category"),
     path("liked-by-user/", LikedByUserView.as_view(), name="liked-by-user"),
     path("create_comment/", CreateCommentView.as_view(), name="create_comment"),
+    path("project_comment/", ListCommentProjectView.as_view(), name="project_comment"),
 
     # Admin path
     path('list_waiting_project/', ListWaitingProjectView.as_view(), name="list_waiting_project"),
