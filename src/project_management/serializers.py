@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 
 from project_management.models import Project, Category, Comment
 from attached_file.models import Image
+from accounts.serializers import RetrieveUserSerializer
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -90,4 +91,13 @@ class CreateCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('text', 'project')
+
+
+class CommentSerializer(serializers.ModelSerializer):
+
+    user = RetrieveUserSerializer()
+
+    class Meta:
+        model = Comment
+        fields = ('id', 'text', 'created_at', 'user')
         
