@@ -39,3 +39,12 @@ class ListUserView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated, IsAdmin]
     serializer_class = RetrieveUserSerializer
     queryset = get_user_model().objects.all()
+
+    def filter_queryset(self, queryset):
+        email = self.request.GET.get('email')
+
+        if email:
+            return queryset.filter(email=email)
+        
+        return queryset
+    
