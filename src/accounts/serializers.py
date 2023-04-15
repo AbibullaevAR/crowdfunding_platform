@@ -15,3 +15,10 @@ class RetrieveUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ('email', 'name', 'id', 'is_admin', 'created_at')
+
+
+class UpdateUserStatusSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = get_user_model()
+        fields = ('is_admin', )
