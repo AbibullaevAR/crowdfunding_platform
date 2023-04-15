@@ -1,5 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.contrib.auth import get_user_model
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework import permissions
@@ -7,6 +8,7 @@ from rest_framework import permissions
 from .serializers import CreateUserSerializer, RetrieveUserSerializer
 from .services import CreateUserService
 from accounts.services import ConfirmEmailService
+from accounts.permissions import IsAdmin
 
 # Create your views here.
 class CreateUserView(generics.CreateAPIView):
@@ -31,3 +33,9 @@ class RetrieveUserView(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class ListUserView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, IsAdmin]
+    serializer_class = RetrieveUserSerializer
+    queryset = get_user_model().objects.all()
