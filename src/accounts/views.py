@@ -5,7 +5,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework import permissions
 
-from .serializers import CreateUserSerializer, RetrieveUserSerializer
+from .serializers import CreateUserSerializer, RetrieveUserSerializer, UpdateUserStatusSerializer
 from .services import CreateUserService
 from accounts.services import ConfirmEmailService
 from accounts.permissions import IsAdmin
@@ -47,4 +47,11 @@ class ListUserView(generics.ListAPIView):
             return queryset.filter(email=email)
         
         return queryset
-    
+
+
+class UpdateUserStatusView(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated, IsAdmin]
+    serializer_class = UpdateUserStatusSerializer
+
+    def get_object(self):
+        return get_user_model().objects.get(id=self.kwargs['id'])
