@@ -75,6 +75,14 @@ class ListApproveProjectView(ProjectListWithImageAPIView):
         status_dict = dict(Project.STATUS_CHOICES)
         status_value = status_dict.get('approve')
         return Project.objects.filter(status=status_value).all()
+    
+    def filter_queryset(self, queryset):
+        user_id = self.request.GET.get('userId')
+
+        if user_id:
+            return queryset.filter(author=user_id)
+        
+        return queryset
 
 
 class ListUserProjectView(ProjectListWithImageAPIView):
