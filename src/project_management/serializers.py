@@ -24,7 +24,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ('email', 'name', 'id', 'projects', 'is_admin')
+        fields = ('email', 'name', 'id', 'projects', 'is_admin', 'created_at')
 
     def get_projects(self, author):
         return len(author.projects.filter(status='approve').all())

@@ -17,6 +17,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(_('name'), max_length=60, blank=False)
     is_active = models.BooleanField(_('active'), default=True)
     is_admin = models.BooleanField(_('admin'), default=False)
+    created_at = models.DateField(auto_now_add=True)
 
     objects = UserManager()
 
