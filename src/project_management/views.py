@@ -134,6 +134,14 @@ class CreateCommentView(generics.CreateAPIView):
         serializer.save(user=self.request.user, **serializer.validated_data)
 
 
+class DeleteCommentView(generics.DestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def get_object(self):
+        comment_id = self.kwargs['id']
+        return Comment.objects.filter(id=comment_id, user=self.request.user)
+
+
 class ListCommentProjectView(generics.ListAPIView):
     serializer_class = CommentSerializer
 
