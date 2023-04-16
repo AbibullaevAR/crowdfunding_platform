@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -131,6 +132,17 @@ REST_FRAMEWORK = {
         'user': os.environ.get('THROTTLE_RATE_USER')
     },
     'DEFAULT_THROTTLE_THROTTLED_MESSAGE': 'Rate limit exceeded'
+}
+
+
+# Simple JWT
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(
+        days=int(os.environ.get('SIMPLE_JWT_ACCESS_TOKEN_LIFETIME'))
+    ),
+    "REFRESH_TOKEN_LIFETIME": timedelta(
+        days=int(os.environ.get('SIMPLE_JWT_REFRESH_TOKEN_LIFETIME'))
+    )
 }
 
 
