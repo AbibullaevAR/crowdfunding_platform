@@ -18,7 +18,7 @@ from project_management.serializers import (
     )
 from project_management.services import like_project, check_project_by_user_limit
 from project_management.generics import ProjectListWithImageAPIView
-from attached_file.services import create_image_for_project, get_download_link_for_images
+from attached_file.services import create_image_for_project, get_download_link_for_images, delete_images
 
 # Create your views here.
 
@@ -43,6 +43,17 @@ class CreateProjectView(generics.CreateAPIView):
 
         headers = self.get_success_headers(serializer.data)
         return Response(resp_data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class DeleteProjectView(generics.DestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    
+    def get_object(self):
+        return Project.objects.filter(id=self.kwargs['id'], author=self.request.user).first()
+    
+    def perform_destroy(self, instance):
+        delete_images(instance.images.all())
+        instance.delete()
 
 
 class RetrieveProjectView(generics.RetrieveAPIView):
