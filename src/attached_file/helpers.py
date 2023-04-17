@@ -108,7 +108,6 @@ class ExternalStorageManage:
         return request_json['href']
     
     def delete_files(self, file_names: list[str]):
-        print(file_names)
         self._delete_from_cache(file_names)
         self._do_requests(file_names, self.action['delete_file'])
 
