@@ -69,6 +69,11 @@ class ExternalStorageManage:
                 base_url='https://cloud-api.yandex.net/v1/disk/resources/download?path={path}',
                 method='GET',
                 headers=self.headers
+            ),
+            'delete_file': self.Action(
+                base_url='https://cloud-api.yandex.net/v1/disk/resources?path={path}&force_async=true&permanently=true',
+                method='DELETE',
+                headers=self.headers
             )
         }
 
@@ -101,8 +106,12 @@ class ExternalStorageManage:
             headers=self.headers
         ).json()
         return request_json['href']
-
     
+    def delete_files(self, file_names: list[str]):
+        print(file_names)
+        self._delete_from_cache(file_names)
+        self._do_requests(file_names, self.action['delete_file'])
+
     def get_download_links(self, file_names: list[str]):
 
         file_cache = self._check_in_cache(file_names)
@@ -134,3 +143,6 @@ class ExternalStorageManage:
 
     def _check_in_cache(self, file_names: list[str]) -> dict:
         return {file_name: cache.get(file_name) for file_name in file_names if cache.has_key(file_name)}
+    
+    def _delete_from_cache(self, file_names: list[str]) -> None:
+        cache.delete_many(file_names)
