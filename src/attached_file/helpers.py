@@ -45,15 +45,32 @@ class ExternalStorageManage:
     Setup `EXTERNAL_STORAGE_TOKEN` environment variable before use.
     """
 
+    @dataclass
+    class Action:
+        base_url: str
+        method: str
+        headers: dict
+
     headers = {
         'Accept': 'application/json',
         'Authorization': f'OAuth {settings.EXTERNAL_STORAGE_TOKEN}'
     }
 
-    action = {
-        'upload_file': 'https://cloud-api.yandex.net/v1/disk/resources/upload?path=',
-        'download_file': 'https://cloud-api.yandex.net/v1/disk/resources/download?path='
-    }
+    action: dict[str, Action]
+
+    def __init__(self) -> None:
+        self.action = {
+            'upload_file': self.Action(
+                base_url='https://cloud-api.yandex.net/v1/disk/resources/upload?path={path}',
+                method='GET', 
+                headers=self.headers
+            ),
+            'download_file': self.Action(
+                base_url='https://cloud-api.yandex.net/v1/disk/resources/download?path={path}',
+                method='GET',
+                headers=self.headers
+            )
+        }
 
     def get_upload_link(self, file_name: str):
         """
@@ -65,7 +82,7 @@ class ExternalStorageManage:
         """
 
         request_json = requests.get(
-            url=self.action['upload_file'] + file_name,
+            url=self.action['upload_file'].base_url.format(path=file_name),
             headers=self.headers
         ).json()
         return request_json['href']
@@ -93,21 +110,21 @@ class ExternalStorageManage:
 
         if files_not_cache is not None:
             cache.set_many(
-                {file_name: link for file_name, link in zip(files_not_cache, self._do_requests(files_not_cache))}
+                {file_name: link for file_name, link in zip(files_not_cache, self._do_requests(files_not_cache, self.action['download_file']))}
             )
             file_cache = self._check_in_cache(file_names)
         
         return [file_cache[file_name] for file_name in file_names]
     
-    def _do_requests(self, file_names: list[str]) -> list[str]:
+    def _do_requests(self, file_names: list[str], action: Action) -> list[str]:
 
         async_manager = AsyncRequestsManager()
 
         async_requests = [
             async_manager.Request(
-                url=self.action['download_file'] + file_name,
-                headers=self.headers,
-                method="GET"
+                url=action.base_url.format(path=file_name),
+                headers=action.headers,
+                method=action.method
             )
             for file_name in file_names]
 
