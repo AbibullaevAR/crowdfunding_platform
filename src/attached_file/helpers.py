@@ -137,7 +137,7 @@ class ExternalStorageManage:
             for file_name in file_names]
 
         responses = async_manager.do_async_requests(async_requests)
-        return [response['href'] for response in responses]
+        return [response.get('href') for response in responses if response is not None]
     
 
     def _check_in_cache(self, file_names: list[str]) -> dict:
