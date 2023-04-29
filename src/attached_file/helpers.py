@@ -53,7 +53,7 @@ class ExternalStorageManage:
 
     headers = {
         'Accept': 'application/json',
-        'Authorization': f'OAuth {settings.EXTERNAL_STORAGE_TOKEN}'
+        'Authorization': f'Bearer {settings.EXTERNAL_STORAGE_TOKEN}'
     }
 
     action: dict[str, Action]
@@ -61,17 +61,17 @@ class ExternalStorageManage:
     def __init__(self) -> None:
         self.action = {
             'upload_file': self.Action(
-                base_url='https://cloud-api.yandex.net/v1/disk/resources/upload?path={path}',
+                base_url='http://127.0.0.1:5000/image-service/api/v1/upload_link/{path}',
                 method='GET', 
                 headers=self.headers
             ),
             'download_file': self.Action(
-                base_url='https://cloud-api.yandex.net/v1/disk/resources/download?path={path}',
+                base_url='http://127.0.0.1:5000/image-service/api/v1/download_link/{path}',
                 method='GET',
                 headers=self.headers
             ),
             'delete_file': self.Action(
-                base_url='https://cloud-api.yandex.net/v1/disk/resources?path={path}&force_async=true&permanently=true',
+                base_url='http://127.0.0.1:5000/image-service/api/v1/delete_file/{path}/',
                 method='DELETE',
                 headers=self.headers
             )
