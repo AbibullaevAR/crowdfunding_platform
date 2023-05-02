@@ -1,3 +1,4 @@
+from django.http import Http404
 from rest_framework import generics, status
 from rest_framework import permissions
 from rest_framework.response import Response
@@ -61,7 +62,11 @@ class RetrieveProjectView(generics.RetrieveAPIView):
 
     def get_object(self) -> Project:
         project_id = self.request.GET.get('id')
-        return Project.objects.get(id=project_id)
+
+        try:
+            return Project.objects.get(id=project_id)
+        except Project.DoesNotExist:
+            raise Http404('Project DoesNotExist')
     
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
