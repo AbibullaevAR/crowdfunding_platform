@@ -59,19 +59,20 @@ class ExternalStorageManage:
     action: dict[str, Action]
 
     def __init__(self) -> None:
+        base_URL = settings.IMAGE_SERVICE_URL
         self.action = {
             'upload_file': self.Action(
-                base_url='http://192.168.0.103:5000/image-service/api/v1/upload_link/{path}',
+                base_url= base_URL + '/image-service/api/v1/upload_link/{path}',
                 method='GET', 
                 headers=self.headers
             ),
             'download_file': self.Action(
-                base_url='http://192.168.0.103:5000/image-service/api/v1/download_link/{path}',
+                base_url= base_URL + '/image-service/api/v1/download_link/{path}',
                 method='GET',
                 headers=self.headers
             ),
             'delete_file': self.Action(
-                base_url='http://192.168.0.103:5000/image-service/api/v1/delete_file/{path}/',
+                base_url= base_URL + '/image-service/api/v1/delete_file/{path}/',
                 method='DELETE',
                 headers=self.headers
             )
