@@ -3,8 +3,8 @@ from django.core.exceptions import ValidationError
 from project_management.models import Project
 
 
-def like_project(project_id: str, user):
-    project = Project.objects.get(id=project_id)
+def like_project(project: Project, user):
+
     if project.taken_likes.filter(id=user.id).exists():
         project.taken_likes.remove(user)
     else:
