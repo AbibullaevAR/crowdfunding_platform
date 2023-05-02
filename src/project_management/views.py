@@ -181,7 +181,7 @@ class ChangeProjectStatusView(generics.UpdateAPIView):
     serializer_class = ChangeProjectStatusSerializer
 
     def get_object(self):
-        return Project.objects.get(id=self.kwargs['id'])
+        return get_object_or_404(Project, id=self.kwargs['id'])
 
 
 class ListWaitingProjectView(ProjectListWithImageAPIView):
