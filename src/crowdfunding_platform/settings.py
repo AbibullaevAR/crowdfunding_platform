@@ -199,3 +199,9 @@ EMAIL_USE_TLS = True
 
 # External storage settings
 EXTERNAL_STORAGE_TOKEN = os.environ.get('EXTERNAL_STORAGE_TOKEN')
+
+# IMAGE SERVICE 
+IMAGE_SERVICE_URL = os.environ.get('IMAGE_SERVICE_URL')
+
+# FRONTEND
+FRONTEND_URL = os.environ.get('FRONTEND_URL')
