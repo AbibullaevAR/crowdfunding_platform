@@ -50,7 +50,7 @@ class DeleteProjectView(generics.DestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
     
     def get_object(self):
-        return Project.objects.filter(id=self.kwargs['id'], author=self.request.user).first()
+        return get_object_or_404(Project, id=self.kwargs['id'], author=self.request.user)
     
     def perform_destroy(self, instance):
         delete_images(instance.images.all())
