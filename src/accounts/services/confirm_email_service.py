@@ -1,6 +1,8 @@
 import json
 from dataclasses import dataclass, asdict
 
+from django.conf import settings
+
 from accounts.utilities import check_reg_token, RegTokenNotValid
 from .helpers import UserEntity, UsersDAO
 
@@ -30,4 +32,4 @@ class ConfirmEmailService:
 
         email_confirmation_json = json.dumps(asdict(email_confirmation))
 
-        return f'http://localhost:3000/user/modification?data={email_confirmation_json}'
+        return settings.FRONTEND_URL + f'/user/modification?data={email_confirmation_json}'
