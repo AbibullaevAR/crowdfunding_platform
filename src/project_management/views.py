@@ -119,8 +119,11 @@ class LikeProjectView(generics.GenericAPIView):
     def post(self, request: Request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+        project_id = serializer.validated_data.get('project_id')
 
-        like_project(serializer.validated_data.get('project_id'), request.user)
+        project = get_object_or_404(Project, id=project_id)
+
+        like_project(project, request.user)
 
         return Response(status=status.HTTP_202_ACCEPTED)
 
