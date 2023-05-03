@@ -21,3 +21,5 @@ def get_download_link_for_images(images: QuerySet[Image]) -> list[tuple[QuerySet
 def delete_images(images: QuerySet[Image]) -> None:
     storage = ExternalStorageManage()
     storage.delete_files([str(image.id) + image.available_format for image in images])
+
+    [image.delete() for image in images]
