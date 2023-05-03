@@ -171,7 +171,7 @@ class DeleteCommentView(generics.DestroyAPIView):
 
     def get_object(self):
         comment_id = self.kwargs['id']
-        return Comment.objects.filter(id=comment_id, user=self.request.user)
+        return get_object_or_404(Comment, id=comment_id, user=self.request.user)
 
 
 class ListCommentProjectView(generics.ListAPIView):
