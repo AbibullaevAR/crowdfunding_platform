@@ -47,6 +47,44 @@ class CreateProjectView(generics.CreateAPIView):
         return Response(resp_data, status=status.HTTP_201_CREATED, headers=headers)
 
 
+class UpdateProjectView(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated,]
+    serializer_class = CreateProjectSerializer
+
+    def get_object(self):
+        status_dict = dict(Project.STATUS_CHOICES)
+        status_value = [status_dict.get('approve'), status_dict.get('cancel')]
+        
+        return get_object_or_404(
+            Project, 
+            id=self.kwargs['id'],
+            author=self.request.user,
+            status__in=status_value
+        )
+    
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        
+        delete_images(instance.images.all())
+        available_formats = serializer.validated_data.pop('images')['all']
+
+        serializer.save()
+
+        resp_data = {
+            'upload_links': create_image_for_project(project=instance, available_formats=available_formats)
+        }
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(resp_data)
+
+
 class DeleteProjectView(generics.DestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
     
