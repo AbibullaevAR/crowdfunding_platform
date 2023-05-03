@@ -19,6 +19,7 @@ from project_management.serializers import (
     )
 from project_management.services import like_project, check_project_by_user_limit
 from project_management.generics import ProjectListWithImageAPIView
+from project_management.helpers import is_valid_uuid
 from attached_file.services import create_image_for_project, get_download_link_for_images, delete_images
 
 # Create your views here.
@@ -100,7 +101,7 @@ class ListApproveProjectView(ProjectListWithImageAPIView):
     def filter_queryset(self, queryset):
         user_id = self.request.GET.get('userId')
 
-        if user_id:
+        if is_valid_uuid(user_id):
             return queryset.filter(author=user_id)
         
         return queryset
