@@ -180,7 +180,11 @@ class ListCommentProjectView(generics.ListAPIView):
 
     def get_queryset(self):
         project_id = self.request.GET.get('id')
-        return Comment.objects.filter(project=project_id)
+
+        status_dict = dict(Project.STATUS_CHOICES)
+        status_value = status_dict.get('approve')
+
+        return Comment.objects.filter(project=project_id, status=status_value)
     
 
 # Admin views
