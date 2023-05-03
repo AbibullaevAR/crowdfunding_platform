@@ -184,7 +184,9 @@ class ListCommentProjectView(generics.ListAPIView):
         status_dict = dict(Project.STATUS_CHOICES)
         status_value = status_dict.get('approve')
 
-        return Comment.objects.filter(project=project_id, status=status_value)
+        project = get_object_or_404(Project, id=project_id, status=status_value)
+
+        return Comment.objects.filter(project=project)
     
 
 # Admin views
