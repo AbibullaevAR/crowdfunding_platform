@@ -12,7 +12,7 @@ class Image(models.Model):
     AVAILABLE_FORMAT_CHOICES = (
         ('.png', 'PNG'),
         ('.jpg', 'JPG'),
-        ('.jpge', 'JPGE')
+        ('.jpeg', 'JPEG')
     )
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
