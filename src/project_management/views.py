@@ -40,6 +40,7 @@ class CreateProjectView(generics.CreateAPIView):
         project = serializer.save(author=self.request.user, **serializer.validated_data)
 
         resp_data = {
+            **serializer.validated_data,
             'upload_links': create_image_for_project(project=project, available_formats=available_formats)
         }
 
