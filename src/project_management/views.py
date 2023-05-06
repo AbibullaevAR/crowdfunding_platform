@@ -32,8 +32,8 @@ class CreateProjectView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        # if not check_project_by_user_limit(self.request.user):
-        #     raise ValidationError('you have exceeded the number of projects on consideration', status.HTTP_400_BAD_REQUEST)
+        if not check_project_by_user_limit(self.request.user):
+            raise ValidationError('you have exceeded the number of projects on consideration', status.HTTP_400_BAD_REQUEST)
 
         available_formats = serializer.validated_data.pop('images')['all']
 
