@@ -62,13 +62,13 @@ class UpdateProjectView(generics.UpdateAPIView):
 
     def get_object(self):
         status_dict = dict(Project.STATUS_CHOICES)
-        status_value = [status_dict.get('approve'), status_dict.get('cancel')]
+        status_value = status_dict.get('cancel')
         
         return get_object_or_404(
             Project, 
             id=self.kwargs['id'],
             author=self.request.user,
-            status__in=status_value
+            status=status_value
         )
     
     def update(self, request, *args, **kwargs):
