@@ -20,7 +20,7 @@ from project_management.serializers import (
 from project_management.services import like_project, check_project_by_user_limit
 from project_management.generics import ProjectListWithImageAPIView
 from project_management.helpers import is_valid_uuid
-from attached_file.services import create_image_for_project, get_download_link_for_images, delete_images
+from attached_file.services import create_image_for_project, get_download_link_for_images, delete_images, get_download_link_for_project_image
 
 # Create your views here.
 
@@ -41,11 +41,9 @@ class CreateProjectView(generics.CreateAPIView):
 
         upload_links = create_image_for_project(project=project, available_formats=available_formats)
 
-        download_links = [link for _, link in get_download_link_for_images(project.images.all())]
-
         context = {
             'images':{
-                project.id: download_links
+                project.id: get_download_link_for_project_image(project)
             }
         }
 
@@ -84,7 +82,14 @@ class UpdateProjectView(generics.UpdateAPIView):
 
         serializer.save()
 
+        context = {
+            'images':{
+                instance.id: get_download_link_for_project_image(instance)
+            }
+        }
+
         resp_data = {
+            **ProjectSerializer(instance=instance, context=context).data,
             'upload_links': create_image_for_project(project=instance, available_formats=available_formats)
         }
 
@@ -126,11 +131,9 @@ class RetrieveProjectView(generics.RetrieveAPIView):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
 
-        download_links = [link for _, link in get_download_link_for_images(instance.images.all())]
-
         context = {
             'images':{
-                instance.id: download_links
+                instance.id: get_download_link_for_project_image(instance)
             }
         }
 
