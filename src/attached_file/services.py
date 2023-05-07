@@ -18,6 +18,11 @@ def get_download_link_for_images(images: QuerySet[Image]) -> list[tuple[QuerySet
 
     return zip(images, download_links)
 
+
+def get_download_link_for_project_image(project):
+    return [link for _, link in get_download_link_for_images(project.images.all())]
+
+
 def delete_images(images: QuerySet[Image]) -> None:
     storage = ExternalStorageManage()
     storage.delete_files([str(image.id) + image.available_format for image in images])
