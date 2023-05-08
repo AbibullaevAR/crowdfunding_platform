@@ -1,3 +1,5 @@
+import logging
+
 from dataclasses import dataclass, asdict
 import asyncio
 import time
@@ -7,6 +9,7 @@ from django.conf import settings
 from django.core.cache import cache
 import requests
 
+logger = logging.getLogger('attached_file.helpers')
 
 class AsyncRequestsManager:
 
@@ -87,10 +90,17 @@ class ExternalStorageManage:
         :rtype: str.
         """
 
-        request_json = requests.get(
-            url=self.action['upload_file'].base_url.format(path=file_name),
-            headers=self.headers
-        ).json()
+        try:
+            request_json = requests.get(
+                url=self.action['upload_file'].base_url.format(path=file_name),
+                headers=self.headers
+            ).json()
+        except requests.exceptions.RequestException as e:
+            logger.exception('{e}'.format(
+                e=e
+            ))
+            raise e
+
         return request_json['href']
 
     def get_download_link(self, file_name):
