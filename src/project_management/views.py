@@ -233,8 +233,13 @@ class CreateCommentView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
     serializer_class = CreateCommentSerializer
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user, **serializer.validated_data)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        comment = serializer.save(user=self.request.user, **serializer.validated_data)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(CommentSerializer(instance=comment).data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class DeleteCommentView(generics.DestroyAPIView):
