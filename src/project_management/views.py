@@ -98,6 +98,8 @@ class UpdateProjectView(generics.UpdateAPIView):
 
         serializer.save(status=status_value)
 
+        upload_links = create_image_for_project(project=instance, available_formats=available_formats)
+
         context = {
             'images':{
                 instance.id: get_download_link_for_project_image(instance)
@@ -106,7 +108,7 @@ class UpdateProjectView(generics.UpdateAPIView):
 
         resp_data = {
             **ProjectSerializer(instance=instance, context=context).data,
-            'upload_links': create_image_for_project(project=instance, available_formats=available_formats)
+            'upload_links': upload_links
         }
 
         if getattr(instance, '_prefetched_objects_cache', None):
