@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework import permissions
@@ -23,18 +25,24 @@ from project_management.helpers import is_valid_uuid
 from attached_file.services import create_image_for_project, get_download_link_for_images, delete_images, get_download_link_for_project_image
 
 
-# Create your views here.
+logger = logging.getLogger('project_management.views')
+
 
 class CreateProjectView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
     serializer_class = CreateProjectSerializer
 
     def create(self, request, *args, **kwargs):
+        logger.info('User:{user_id} start create project'.format(user_id=self.request.user.id))
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         if not check_project_by_user_limit(self.request.user):
-
+            logger.exception(
+                'User:{user_id} have exceeded the number of projects on consideration'.format(user_id=self.request.user.id),
+                exc_info=False
+            )
             raise ValidationError('you have exceeded the number of projects on consideration', status.HTTP_400_BAD_REQUEST)
 
         available_formats = serializer.validated_data.pop('images')['all']
@@ -55,6 +63,9 @@ class CreateProjectView(generics.CreateAPIView):
         }
 
         headers = self.get_success_headers(serializer.data)
+
+        logger.info('User:{user_id} successful create project'.format(user_id=self.request.user.id))
+
         return Response(resp_data, status=status.HTTP_201_CREATED, headers=headers)
 
 
