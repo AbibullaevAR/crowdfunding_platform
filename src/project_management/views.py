@@ -22,6 +22,7 @@ from project_management.generics import ProjectListWithImageAPIView
 from project_management.helpers import is_valid_uuid
 from attached_file.services import create_image_for_project, get_download_link_for_images, delete_images, get_download_link_for_project_image
 
+
 # Create your views here.
 
 class CreateProjectView(generics.CreateAPIView):
@@ -33,6 +34,7 @@ class CreateProjectView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
 
         if not check_project_by_user_limit(self.request.user):
+
             raise ValidationError('you have exceeded the number of projects on consideration', status.HTTP_400_BAD_REQUEST)
 
         available_formats = serializer.validated_data.pop('images')['all']
@@ -80,7 +82,10 @@ class UpdateProjectView(generics.UpdateAPIView):
         delete_images(instance.images.all())
         available_formats = serializer.validated_data.pop('images')['all']
 
-        serializer.save()
+        status_dict = dict(Project.STATUS_CHOICES)
+        status_value = status_dict.get('waiting')
+
+        serializer.save(status=status_value)
 
         context = {
             'images':{
