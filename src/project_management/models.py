@@ -25,6 +25,7 @@ class Project(models.Model):
     title = models.CharField(_('title'), max_length=45, blank=False)
     goal_likes = models.PositiveIntegerField(_('goal_likes'), default=0, blank=False)
     short_description = models.CharField(_('short_description'), max_length=180)
+    description = models.TextField(_('description'), blank=False)
     start_project = models.DateField(blank=False)
     end_project = models.DateField(blank=False)
     status = models.CharField(_('status'), max_length=10, choices=STATUS_CHOICES, default='waiting')

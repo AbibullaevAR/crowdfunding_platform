@@ -37,7 +37,7 @@ class CreateProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ('title', 'goal_likes', 'short_description', 'start_project', 'end_project', 'categories', 'images')
+        fields = ('title', 'goal_likes', 'short_description', 'description', 'start_project', 'end_project', 'categories', 'images')
     
     def validate(self, attrs):
         if attrs['start_project'] < timezone.localdate():
@@ -58,7 +58,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ('id', 'taken_likes', 'title', 'goal_likes', 'short_description', 'start_project', 'end_project', 'categories', 'images', 'status', 'author')
+        fields = ('id', 'taken_likes', 'title', 'goal_likes', 'short_description', 'description', 'start_project', 'end_project', 'categories', 'images', 'status', 'author')
     
     def get_images(self, project: Project):
         return self.context['images'].get(project.id)
