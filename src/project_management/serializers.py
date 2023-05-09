@@ -30,7 +30,7 @@ class AuthorSerializer(serializers.ModelSerializer):
         return len(author.projects.filter(status='approve').all())
 
 
-class CreateProjectSerializer(serializers.ModelSerializer):
+class CreateUpdateProjectSerializer(serializers.ModelSerializer):
 
     images = serializers.ListField(child=serializers.ChoiceField(Image.AVAILABLE_FORMAT_CHOICES), source='images.all')
     categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)

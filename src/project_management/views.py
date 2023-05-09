@@ -10,7 +10,7 @@ from rest_framework.exceptions import ValidationError
 from accounts.permissions import IsAdmin
 from project_management.models import Category, Project, Comment
 from project_management.serializers import (
-    CreateProjectSerializer,
+    CreateUpdateProjectSerializer,
     CategorySerializer, 
     ProjectSerializer, 
     LikeProjectSerializer, 
@@ -30,7 +30,7 @@ logger = logging.getLogger('project_management.views')
 
 class CreateProjectView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
-    serializer_class = CreateProjectSerializer
+    serializer_class = CreateUpdateProjectSerializer
 
     def create(self, request, *args, **kwargs):
         logger.info('User:{user_id} start create project'.format(user_id=self.request.user.id))
@@ -71,7 +71,7 @@ class CreateProjectView(generics.CreateAPIView):
 
 class UpdateProjectView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated,]
-    serializer_class = CreateProjectSerializer
+    serializer_class = CreateUpdateProjectSerializer
 
     def get_object(self):
         status_dict = dict(Project.STATUS_CHOICES)
