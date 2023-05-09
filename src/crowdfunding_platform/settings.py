@@ -30,7 +30,7 @@ DEBUG = int(os.environ.get("DEBUG", default=0))
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 # Cors Settings
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOWED_ORIGINS = os.environ.get("CORS_ALLOWED_ORIGINS").split(" ")
 
 CORS_ALLOW_HEADERS = [
     "accept",
@@ -246,3 +246,6 @@ IMAGE_SERVICE_URL = os.environ.get('IMAGE_SERVICE_URL')
 
 # FRONTEND
 FRONTEND_URL = os.environ.get('FRONTEND_URL')
+
+# Project management
+MAX_USER_PROJECT = os.environ.get('MAX_USER_PROJECT')
