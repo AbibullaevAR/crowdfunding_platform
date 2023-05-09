@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.conf import settings
 
 from project_management.models import Project
 
@@ -16,5 +17,5 @@ def check_project_by_user_limit(user) -> bool:
     status_dict = dict(Project.STATUS_CHOICES)
     status_value = status_dict.get('waiting')
 
-    return len(Project.objects.filter(author=user, status=status_value).all()) < 5
+    return len(Project.objects.filter(author=user, status=status_value).all()) < settings.MAX_USER_PROJECT
     
